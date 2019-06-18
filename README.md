@@ -4,5 +4,4 @@ by: [Halldór Stefánsson](https://halldor90.dev)
 
 Thanks to [Michael Crump](https://twitter.com/mbcrump) for providing [this git repository](https://github.com/mbcrump/EmailSubscription) has a guideline
 
-
-https://halldor90.dev/fotboltinet.html
+# Try it [here](https://halldor90.dev/fotboltinet.html)
