@@ -1,4 +1,4 @@
-# Generates a daily newsletter from fotbolti.net, with news that include "(Staðfest)". Using Azure Functions, SendGrid and Azure Table Storage.
+## Generates a daily newsletter from fotbolti.net, with news that include "(Staðfest)". Using Azure Functions, SendGrid and Azure Table Storage.
 
 by: [Halldór Stefánsson](https://halldor90.dev)
 
