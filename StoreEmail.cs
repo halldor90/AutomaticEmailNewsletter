@@ -20,6 +20,7 @@ namespace SendEmailToReaders
 
             var postData = await req.Content.ReadAsFormDataAsync();
             var missingFields = new List<string>();
+
             if (postData["fromEmail"] == null)
             {
                 missingFields.Add("fromEmail");
@@ -33,7 +34,6 @@ namespace SendEmailToReaders
 
             try
             {
-
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
 
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
@@ -44,7 +44,7 @@ namespace SendEmailToReaders
 
                 CreateMessage(table, new EmailEntity(postData["fromEmail"]));
 
-                return req.CreateResponse(HttpStatusCode.OK, "Thanks! I've successfully received your request. "); //
+                return req.CreateResponse(HttpStatusCode.OK, "Thanks! You've successfully signed up. "); //
             }
             catch (Exception ex)
             {
@@ -54,7 +54,6 @@ namespace SendEmailToReaders
                     message = $"There are problems storing your email address: {ex.GetType()}"
                 });
             }
-
         }
 
         static void CreateMessage(CloudTable table, EmailEntity newemail)
@@ -63,7 +62,5 @@ namespace SendEmailToReaders
 
             table.ExecuteAsync(insert);
         }
-    }
-
-  
+    }  
 }

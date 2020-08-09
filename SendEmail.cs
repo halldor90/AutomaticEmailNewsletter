@@ -19,25 +19,26 @@ namespace SendEmailToReaders
         {
             // Get feed 
             string feedurl = "https://www.fotbolti.net/rss.php";
-            string lastday = "";
-            bool sendStadfest = false;
+            string bodyMessage = "";
+            bool sendEmail = false;
 
             XmlReader reader = XmlReader.Create(feedurl);
             SyndicationFeed feed = SyndicationFeed.Load(reader);
 
-            lastday = lastday + "<b>Nýjar (Staðfest) fréttir undanfarin dag:</b><br><br>";
+            bodyMessage += "<b>Nýjar (Staðfest) fréttir undanfarin dag:</b><br><br>";
+
             foreach (SyndicationItem item in feed.Items)
             {
                 if ((DateTime.Now - item.PublishDate).TotalDays < 1 && item.Title.Text.Contains("(Staðfest)"))
                 {
-                    lastday = lastday + "<a href=\"" + item.Links[0].Uri + "\">" + item.Title.Text + "</a><br>";
-                    sendStadfest = true;
+                    bodyMessage += "<a href=\"" + item.Links[0].Uri + "\">" + item.Title.Text + "</a><br>";
+                    sendEmail = true;
                 }
             }
 
             reader.Close();
 
-            if (sendStadfest)
+            if (sendEmail)
             {
                 // Get subscription table
                 var storageAccountConnectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
@@ -50,25 +51,25 @@ namespace SendEmailToReaders
 
                 var apiKey = System.Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
                 var sendGridClient = new SendGridClient(apiKey);
-                var from = new EmailAddress("halldor@basictechgeek.com", "Fotbolti.net (Staðfest)");
+                var from = new EmailAddress("halldor@halldorstefans.com", "Fotbolti.net (Staðfest)");
                 
                 var subject = "Daglegt fréttabréf fyrir Fotbolti.net (Staðfest) uppfærslur";
                 var displayRecipients = false; // set this to true if you want recipients to see each others mail id 
 
-                var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, recipientlist, subject, "", lastday, displayRecipients);
+                var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, recipientlist, subject, "", bodyMessage, displayRecipients);
                 var response = await sendGridClient.SendEmailAsync(msg);
             }
         }
 
         public static List<EmailAddress> GetAllEmailAddresses(CloudTable table)
-        {
-            
-            var retList = new List<EmailAddress>();
-            
-            TableQuery<EmailEntity> query = new TableQuery<EmailEntity>()
-                    .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "SendEmailToReaders"));
+        {            
+            var retList = new List<EmailAddress>();            
+            var query = new TableQuery<EmailEntity>()
+                .Where(TableQuery
+                    .GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "SendEmailToReaders"));
 
             var segment = table.ExecuteQuerySegmentedAsync(query, null);
+
             foreach (EmailEntity entity in segment.Result)
             {
                 retList.Add(MailHelper.StringToEmailAddress(entity.EmailAddress));

@@ -5,7 +5,6 @@ namespace SendEmailToReaders
 {
     class EmailEntity : TableEntity
     {
-
         public string EmailAddress { get; set; }
 
         public EmailEntity(string email)
@@ -19,6 +18,5 @@ namespace SendEmailToReaders
         {
 
         }
-    }
-    
+    }    
 }
