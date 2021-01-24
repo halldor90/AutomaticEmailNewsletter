@@ -5,7 +5,7 @@
 <p align="center">
   <h3 align="center">AutomaticEmailNewsletter</h3>
   <p align="center">
-    <a href="https://www.halldorstefans.dev/fotboltinet.html">View site</a>
+    <a href="https://fotboltinet.z6.web.core.windows.net/">View site</a>
   </p>
 </p>
 
